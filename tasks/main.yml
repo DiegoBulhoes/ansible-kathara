@@ -1,0 +1,34 @@
+- name: "Install operating system packages"
+  apt:
+    name:
+      - curl
+      - git
+      - xterm
+      - unzip
+    update_cache: yes
+
+- name: Installing the latest version of Docker
+  shell: curl -sS https://get.docker.com | sh
+
+- name: Add an apt key by id from a keyserver
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 21805A48E6CBBA6B991ABE76646193862B759810
+
+- name: Add ppa - Kathara
+  apt_repository:
+    repo: ppa:katharaframework/kathara
+    state: present
+
+- name: "Add kathara"
+  apt:
+    name: "kathara"
+    state: latest
+    update_cache: yes
+
+- name: Add the user with a bash shell, adding the group 'docker'
+  user:
+    name: "{{user_name}}"
+    shell: /bin/bash
+    groups: docker
+    append: yes
