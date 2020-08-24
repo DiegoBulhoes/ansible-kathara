@@ -5,10 +5,29 @@
       - git
       - xterm
       - unzip
+      - apt-transport-https
+      - ca-certificates
+      - gnupg-agent
+      - software-properties-common
     update_cache: yes
 
-- name: Installing the latest version of Docker
-  shell: curl -sS https://get.docker.com | sh
+- name: Add an Apt subscription key - Docker
+  apt_key:
+    url: "{{ docker_apt_key_url }}"
+    state: present
+
+- name: Configure Docker's upstream APT repository
+  apt_repository:
+    repo: "{{ docker_apt_repository }}"
+    update_cache: true
+
+- name: "Install operating system packages"
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    update_cache: yes
 
 - name: Add an apt key by id from a keyserver
   apt_key:
